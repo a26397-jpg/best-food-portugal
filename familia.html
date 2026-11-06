@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Área da Família Beneficiária — Best Food Portugal</title>
+  <link rel="stylesheet" href="css/3styles.css">
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#060913">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Best Food Portugal">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+  <!-- REGISTO DO SERVICE WORKER DA PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('PWA Service Worker Ativo no escopo:', reg.scope))
+          .catch(err => console.error('Erro ao registar Service Worker PWA:', err));
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <!-- CABEÇALHO INSTITUCIONAL -->
+  <header class="header">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12zm-7-2h2v-2h2v-2h-2V8h-2v2h-2v2h2v2z"/></svg>
+      </div>
+      <div>
+        <div class="brand-title">
+          Best Food Portugal
+          <span class="brand-pill">Piloto Freguesia</span>
+        </div>
+        <div class="brand-sub">Algoritmo Soluções Informáticas × Fundação EGOR</div>
+      </div>
+    </div>
+
+    <div id="topUserBadge" class="user-top-profile" style="display: none;">
+      <div class="gestor-badge-box">
+        <div class="avatar-circle" id="userAvatarChar">M</div>
+        <div style="text-align: left;">
+          <div style="font-size: 0.85rem; font-weight: 700; color: #fff;" id="userTopName">Beneficiário</div>
+          <div style="font-size: 0.725rem; color: #10b981;">Beneficiário ●</div>
+        </div>
+      </div>
+      <button onclick="logout()" class="btn-logout">
+        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+        Terminar Sessão
+      </button>
+    </div>
+  </header>
+
+  <!-- PASSO 1: LOGIN -->
+  <main id="step1_login" class="container">
+    <div class="badge-portal">
+      <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+      Portal Tecnológico de Alimentação Comparticipada
+    </div>
+
+    <h1 class="main-heading">Selecione o Perfil de Autenticação</h1>
+    <p class="sub-heading">
+      Plataforma de gestão financeira e logística de produtos frescos com comparticipação direta de 50% pela Fundação EGOR.
+    </p>
+
+    <div class="auth-card">
+      <div class="auth-card-top">
+        <div class="icon-box-purple">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span class="badge-tag-purple">ÁREA BENEFICIÁRIO</span>
+          <a href="menu.html" class="btn-back">Sair</a>
+        </div>
+      </div>
+
+      <h2 class="auth-card-title">Login Cartão Família</h2>
+
+      <form id="formFamLogin" onsubmit="handleLogin(event)">
+        <div class="form-group">
+          <label>Selecione o Cartão Beneficiário</label>
+          <select id="famSelect" class="form-control" required></select>
+        </div>
+
+       <div class="form-group">
+  <label>Senha de Acesso (4 Dígitos)</label>
+  <input 
+    type="text" 
+    id="famPinInput" 
+    class="form-control" 
+    style="letter-spacing: 0.3em; text-align: center; font-size: 1.2rem;" 
+    maxlength="4" 
+    placeholder=""
+    autocomplete="off"
+    inputmode="numeric"
+    pattern="[0-9]*"
+    required>
+</div>
+
+        <button type="submit" class="btn-purple" style="margin-top: 0.5rem;">
+          Aceder ao Cartão Digital
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <!-- PASSO 2: DASHBOARD FAMÍLIA -->
+  <div id="step2_dashboard" class="dashboard-wrapper" style="display: none;">
+    <div class="dashboard-header-card">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <div class="icon-box-purple" style="width: 3.25rem; height: 3.25rem;">
+          <svg class="icon-svg" style="width: 1.6rem; height: 1.6rem;" viewBox="0 0 24 24"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+        </div>
+        <div>
+          <h1 style="font-size: 1.45rem; font-weight: 800; color: #fff;">Área da Família Beneficiária</h1>
+          <p style="font-size: 0.875rem; color: #94a3b8; margin-top: 0.2rem;">
+            Programa Best Food Portugal · Comparticipação Alimentar de 50%.
+          </p>
+        </div>
+      </div>
+
+      <div class="nav-actions">
+        <button id="btnTabCartao" class="tab-btn-purple" onclick="switchFamilyTab('cartao')">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M3 5v14c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H5c-1.11 0-2 .9-2 2zm12 4c0 1.66-1.34 3-3 3s-3-1.34-3-3 1.34-3 3-3 3 1.34 3 3zm-9 8c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1H6v-1z"/></svg>
+          Cartão Digital
+        </button>
+        <button id="btnTabCompras" class="btn-tab-outline" onclick="switchFamilyTab('compras')">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+          Minhas Compras
+        </button>
+      </div>
+    </div>
+
+    <div id="tabFamilyCartao" class="family-grid">
+      <div>
+        <div class="digital-card">
+          <div class="card-header-row">
+            <div class="card-avatar-box">
+              <svg class="icon-svg" style="width: 1.5rem; height: 1.5rem;" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            </div>
+            <div class="card-tag-bfp">
+              BEST FOOD PORTUGAL<br>
+              <span style="font-weight: 400; opacity: 0.8;">BFP 50/50</span>
+            </div>
+          </div>
+
+          <div class="card-holder-name" id="cardHolderName">Beneficiário</div>
+
+          <div class="qr-code-box">
+            <svg viewBox="0 0 100 100">
+              <rect x="5" y="5" width="30" height="30" fill="#0f172a"/>
+              <rect x="10" y="10" width="20" height="20" fill="#fff"/>
+              <rect x="15" y="15" width="10" height="10" fill="#0f172a"/>
+              
+              <rect x="65" y="5" width="30" height="30" fill="#0f172a"/>
+              <rect x="70" y="10" width="20" height="20" fill="#fff"/>
+              <rect x="75" y="15" width="10" height="10" fill="#0f172a"/>
+              
+              <rect x="5" y="65" width="30" height="30" fill="#0f172a"/>
+              <rect x="10" y="70" width="20" height="20" fill="#fff"/>
+              <rect x="15" y="75" width="10" height="10" fill="#0f172a"/>
+
+              <rect x="40" y="10" width="15" height="15" fill="#0f172a"/>
+              <rect x="45" y="45" width="15" height="15" fill="#0f172a"/>
+              <rect x="65" y="65" width="12" height="12" fill="#0f172a"/>
+              <rect x="80" y="78" width="15" height="15" fill="#0f172a"/>
+            </svg>
+          </div>
+
+          <div class="card-footer-row">
+            <div>
+              <div class="card-num-label">N.º DO CARTÃO</div>
+              <div class="card-num-value" id="cardHolderNum">BFP-1001</div>
+            </div>
+            <span class="status-pill-active" id="cardStatusBadge">ATIVO</span>
+          </div>
+        </div>
+
+        <div class="saldo-card">
+          <div class="saldo-title">SALDO COMPARTICIPADO DISPONÍVEL</div>
+          <div class="saldo-amount" id="cardSaldoDisplay">0,00 €</div>
+          <div class="saldo-sub">
+            Em cada compra de fruta e legumes nos vendedores aderentes, paga apenas <strong>50% do total</strong>.
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <!-- COMUNICAÇÕES DA FUNDAÇÃO EGOR -->
+        <div class="notifications-card">
+          <div class="notifications-header">
+            <div class="notifications-title">
+              <svg class="icon-svg" style="color: var(--blue-accent);" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+              Comunicações da Fundação EGOR
+            </div>
+            <span class="brand-pill" style="background-color: var(--blue-glow); color: var(--blue-accent); border-color: rgba(56,189,248,0.3);">Avisos em Tempo Real</span>
+          </div>
+
+          <div id="notificationsList"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="tabFamilyCompras" class="notifications-card" style="display: none;">
+      <h2 style="font-size: 1.25rem; font-weight: 800; color: #fff; margin-bottom: 1rem;">Histórico de Compras Comparticipadas (50%)</h2>
+      
+      <div class="table-responsive">
+        <table>
+          <thead>
+            <tr>
+              <th>ID TRANSAÇÃO</th>
+              <th>DATA / HORA</th>
+              <th>VENDEDOR / BANCA</th>
+              <th>PRODUTOS COMPRADOS</th>
+              <th>TOTAL COMPRA</th>
+              <th>PAGO POR SI (50%)</th>
+              <th>COMPARTICIPADO (50%)</th>
+            </tr>
+          </thead>
+          <tbody id="famTransacoesTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/db.js"></script>
+
+  <script>
+    let currentFamily = null;
+
+    // Sincronização em tempo real entre abas
+    window.addEventListener('storage', (e) => {
+      if (currentFamily && (e.key === 'bfp_familias' || e.key === 'bfp_transacoes' || e.key === 'bfp_logs')) {
+        refreshCurrentFamilyData();
+      }
+    });
+
+    function refreshCurrentFamilyData() {
+      if (!currentFamily) return;
+      const familias = db.getFamilias();
+      const updatedFam = familias.find(f => f.id === currentFamily.id);
+
+      if (updatedFam) {
+        currentFamily = updatedFam;
+
+        document.getElementById('cardSaldoDisplay').textContent = currentFamily.saldo.toFixed(2).replace('.', ',') + ' €';
+
+        const statusBadge = document.getElementById('cardStatusBadge');
+        if (currentFamily.ativo) {
+          statusBadge.textContent = 'ATIVO';
+          statusBadge.className = 'status-pill-active';
+          statusBadge.style.backgroundColor = 'rgba(16, 185, 129, 0.25)';
+          statusBadge.style.color = '#10b981';
+        } else {
+          statusBadge.textContent = 'INATIVO';
+          statusBadge.className = 'status-pill-active';
+          statusBadge.style.backgroundColor = 'rgba(244, 63, 94, 0.2)';
+          statusBadge.style.color = '#f43f5e';
+        }
+
+        renderComprasTable();
+        renderNotifications();
+      }
+    }
+
+    // ISOLAMENTO RIGOROSO DE NOTIFICAÇÕES PER-FAMÍLIA
+    function renderNotifications() {
+      const logs = db.getLogs();
+      const container = document.getElementById('notificationsList');
+      if (!container) return;
+
+      container.innerHTML = '';
+
+      const relevantLogs = logs.filter(l => {
+        if (!currentFamily) return false;
+        const txt = l.texto;
+        const txtLower = txt.toLowerCase();
+
+        const hasMyId = txt.includes(currentFamily.id);
+        const hasMyName = txt.includes(currentFamily.nome);
+
+        // 1. Notificação explicitamente dirigida a esta família
+        if (hasMyId || hasMyName) {
+          return true;
+        }
+
+        // 2. Ocultar qualquer notificação que refira OUTRO cartão de família (ex: BFP-XXXX)
+        const isAboutOtherFamily = /BFP-\d+/i.test(txt) && !hasMyId;
+        if (isAboutOtherFamily) {
+          return false;
+        }
+
+        // 3. Incluir apenas avisos globais genéricos sem destinatário específico
+        const isGlobalEvent = txtLower.includes('carregamento mensal global') || txtLower.includes('sistema inicializado');
+        return isGlobalEvent;
+      });
+
+      if (relevantLogs.length === 0) {
+        container.innerHTML = `
+          <div class="notification-item">
+            <div class="notification-icon">
+              <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+            </div>
+            <div class="notification-content">
+              <div class="notification-top-row">
+                <span class="notification-item-title">Carregamento Mensal Disponível</span>
+                <span class="notification-date">Hoje</span>
+              </div>
+              <p class="notification-desc">O seu saldo mensal comparticipado encontra-se ativo e pronto a utilizar nos comerciantes locais do Mercado Municipal.</p>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      relevantLogs.slice(0, 8).forEach(l => {
+        const parts = l.texto.split('—');
+        const title = parts[0] ? parts[0].trim() : 'Comunicação Institucional';
+        const desc = parts[1] ? parts[1].trim() : l.texto;
+
+        const item = document.createElement('div');
+        item.className = 'notification-item';
+        item.innerHTML = `
+          <div class="notification-icon">
+            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"/></svg>
+          </div>
+          <div class="notification-content">
+            <div class="notification-top-row">
+              <span class="notification-item-title">${title}</span>
+              <span class="notification-date">${l.hora || 'Agora'}</span>
+            </div>
+            <p class="notification-desc">${desc}</p>
+          </div>
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    function initFamiliasSelect() {
+      const select = document.getElementById('famSelect');
+      if (!select) return;
+
+      const familias = db.getFamilias();
+      select.innerHTML = '';
+
+      if (familias.length === 0) {
+        db.addFamilia({
+          id: 'BFP-1001',
+          nome: 'Maria Santos Silva',
+          nif: '234567890',
+          tel: '912345678',
+          quota: 40,
+          saldo: 40,
+          senha: '1234',
+          ativo: true
+        });
+      }
+
+      db.getFamilias().forEach(f => {
+        const opt = document.createElement('option');
+        opt.value = f.id;
+        opt.textContent = `${f.id} - ${f.nome}`;
+        // CORREÇÃO DO RETÂNGULO BRANCO: FORÇA FUNDO ESCURO E TEXTO BRANCO
+        opt.style.backgroundColor = '#0f172a';
+        opt.style.color = '#ffffff';
+        select.appendChild(opt);
+      });
+    }
+
+   function handleLogin(e) {
+  e.preventDefault();
+  const selectedId = document.getElementById('famSelect').value;
+  const inputPin = document.getElementById('famPinInput').value.trim();
+
+  const familias = db.getFamilias();
+  const fam = familias.find(f => f.id === selectedId);
+
+  if (!fam) {
+    alert('Família não encontrada no sistema.');
+    return;
+  }
+
+  // Se a família não tiver PIN guardado no localStorage, assume '1234'
+  const pinCorreto = String(fam.pin || '1234').trim();
+
+  // VALIDAÇÃO RIGOROSA DE SENHA
+  if (inputPin !== pinCorreto) {
+    alert('Senha incorreta! Tente novamente!');
+    return;
+  }
+
+  // LOGIN BEM-SUCEDIDO
+  currentFamily = fam;
+
+  document.getElementById('userTopName').textContent = fam.nome;
+  document.getElementById('userAvatarChar').textContent = fam.nome.charAt(0);
+  document.getElementById('cardHolderName').textContent = fam.nome;
+  document.getElementById('cardHolderNum').textContent = fam.id;
+  
+  refreshCurrentFamilyData();
+
+  document.getElementById('step1_login').style.display = 'none';
+  document.getElementById('step2_dashboard').style.display = 'block';
+  document.getElementById('topUserBadge').style.display = 'flex';
+}
+
+    // FILTRO ESTRITO DE TRANSAÇÕES DA FAMÍLIA ATUAL
+    function renderComprasTable() {
+      if (!currentFamily) return;
+      const transacoes = db.getTransacoes();
+      const tbody = document.getElementById('famTransacoesTableBody');
+      tbody.innerHTML = '';
+
+      const famTx = transacoes.filter(t => {
+        const idMatch = t.familiaId && t.familiaId === currentFamily.id;
+        const stringMatch = t.familia && (t.familia.includes(currentFamily.id) || t.familia.includes(currentFamily.nome));
+        return idMatch || stringMatch;
+      });
+
+      if (famTx.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">Ainda não efetuou nenhuma compra comparticipada.</td></tr>`;
+        return;
+      }
+
+      famTx.forEach(t => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="color: var(--text-sub);">${t.id}</td>
+          <td>${t.data}</td>
+          <td><strong>${t.vendedor}</strong></td>
+          <td style="font-style: italic; color: var(--text-muted);">${t.produtos}</td>
+          <td><strong>${t.total.toFixed(2).replace('.', ',')} €</strong></td>
+          <td style="color: var(--green-accent); font-weight: 700;">${t.fam50.toFixed(2).replace('.', ',')} €</td>
+          <td style="color: var(--purple-accent); font-weight: 700;">${t.egor50.toFixed(2).replace('.', ',')} €</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function switchFamilyTab(tab) {
+      if (tab === 'cartao') {
+        document.getElementById('tabFamilyCartao').style.display = 'grid';
+        document.getElementById('tabFamilyCompras').style.display = 'none';
+        document.getElementById('btnTabCartao').className = 'tab-btn-purple';
+        document.getElementById('btnTabCompras').className = 'btn-tab-outline';
+      } else {
+        document.getElementById('tabFamilyCartao').style.display = 'none';
+        document.getElementById('tabFamilyCompras').style.display = 'block';
+        document.getElementById('btnTabCartao').className = 'btn-tab-outline';
+        document.getElementById('btnTabCompras').className = 'btn-tab-outline active';
+      }
+    }
+
+    function logout() {
+      currentFamily = null;
+      document.getElementById('step2_dashboard').style.display = 'none';
+      document.getElementById('topUserBadge').style.display = 'none';
+      document.getElementById('step1_login').style.display = 'flex';
+      initFamiliasSelect();
+    }
+
+    document.addEventListener('DOMContentLoaded', initFamiliasSelect);
+  </script>
+</body>
+</html>

@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>App Vendedor — Best Food Portugal</title>
+  <link rel="stylesheet" href="css/4styles.css">
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#060913">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(err => console.error(err));
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <!-- PASSO 1: ECRÃ DE LOGIN DA APP VENDEDOR -->
+  <main id="step1_login" class="container">
+    <div class="badge-portal">
+      <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+      Portal Tecnológico de Alimentação Comparticipada
+    </div>
+
+    <h1 class="main-heading">Selecione o Perfil de Autenticação</h1>
+    <p class="sub-heading">
+      Plataforma de gestão financeira e logística de produtos frescos com comparticipação direta de 50% pela Fundação EGOR.
+    </p>
+
+    <div class="auth-card">
+      <div class="auth-card-top">
+        <div class="icon-box-vendor">
+          <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8h16v10z"/></svg>
+        </div>
+
+        <div style="display: flex; align-items: center; gap: 0.65rem;">
+          <span class="badge-tag-vendor">ACESSO COMERCIANTE</span>
+          <a href="menu.html" class="btn-voltar">‹ Voltar</a>
+        </div>
+      </div>
+
+      <h2 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 1.5rem;">Login App Vendedor</h2>
+
+      <form id="formVendLogin" onsubmit="handleLoginVendedor(event)">
+        <div class="form-group">
+          <label>Selecione o Comerciante / Banca</label>
+          <select id="vendSelect" class="form-control" style="background-color: #0b1120; color: #ffffff;" required></select>
+        </div>
+
+        <div class="form-group">
+          <label>PIN de Acesso (4 Dígitos)</label>
+          <!-- DESATIVADO AUTOFILL E FORÇADO TECLADO NUMÉRICO -->
+          <input 
+            type="password" 
+            id="vendPinInput" 
+            class="form-control" 
+            style="letter-spacing: 0.3em; text-align: center; font-size: 1.2rem;" 
+            maxlength="4" 
+            placeholder="" 
+            autocomplete="new-password"
+            inputmode="numeric"
+            pattern="[0-9]*"
+            required>
+        </div>
+
+        <button type="submit" class="btn-green-submit">Entrar na App Vendedor</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- PASSO 2: DASHBOARD TELEMÓVEL PWA DO VENDEDOR -->
+  <div id="step2_dashboard" class="mobile-app-shell" style="display: none;">
+    <div class="mobile-header-bar">
+      <span style="font-size: 0.85rem; font-weight: 800; color: #fff;" id="mobileClock">09:41</span>
+      <span class="status-network" id="networkStatusBadge">
+        <span style="display: inline-block; width: 6px; height: 6px; background-color: #10b981; border-radius: 50%;"></span>
+        4G Sincronizado
+      </span>
+    </div>
+
+    <div class="vendor-app-info">
+      <div style="display: flex; align-items: center; gap: 0.75rem;">
+        <div class="icon-box-vendor" style="width: 2.6rem; height: 2.6rem; border-radius: 50%; background: rgba(16, 185, 129, 0.2);">
+          <svg class="icon-svg" style="color: #10b981;" viewBox="0 0 24 24"><path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.45c-.16.28-.25.61-.25.96 0 1.1.9 2 2 2h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.12.9-1.63h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49c.08-.14.12-.31.12-.48 0-.55-.45-1-1-1H5.21l-.94-2H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/></svg>
+        </div>
+        <div>
+          <div style="font-size: 1rem; font-weight: 800; color: #fff;" id="vendedorTopBanca">Banca do Comerciante</div>
+          <div style="font-size: 0.75rem; color: #94a3b8;">Venda BFP Comparticipada</div>
+        </div>
+      </div>
+      <button type="button" onclick="logoutVendedor()" class="btn-sair-red">Sair</button>
+    </div>
+
+    <div class="mobile-content-card">
+      <div class="card-inner-title">LEITURA DO CARTÃO BENEFICIÁRIO</div>
+      <div class="card-inner-sub">Aponte para o QR Code ou selecione um cartão.</div>
+
+      <div class="camera-box-viewport">
+        <div class="camera-laser-line"></div>
+        <svg class="qr-target-matrix" viewBox="0 0 24 24"><path d="M3 3h8v8H3V3zm2 2v4h4V5H5zm8-2h8v8h-8V3zm2 2v4h4V5h-4zM3 13h8v8H3v-8zm2 2v4h4v-4H5zm13-2h3v2h-3v-2zm-3 3h2v3h-2v-3zm3 0h3v5h-3v-5zm-3 4h2v2h-2v-2z"/></svg>
+        <div class="camera-status-text">Câmara Ativa - A ler QR Code...</div>
+      </div>
+
+     <div class="sim-grid-title">SIMULAR LEITURA RÁPIDA:</div>
+<div class="sim-buttons-grid" id="familiasSimGrid">
+  <!-- Os botões serão gerados dinamicamente via JS -->
+</div>
+
+    <div class="divider-text">OU DIGITE O CÓDIGO</div>
+
+    <div class="manual-input-box">
+      <input type="text" id="manualCodeInput" class="input-code-field" placeholder="EX: BFP-1001">
+      <button type="button" onclick="validarCodigoManual()" class="btn-validar-dark">Validar</button>
+    </div>
+
+    <div class="mobile-content-card" id="sectionHistorico">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.85rem;">
+        <span style="font-size: 0.95rem; font-weight: 800; color: #0f172a;">Histórico de Hoje</span>
+        <span class="brand-pill" id="vendasCountBadge" style="background: rgba(15,23,42,0.06); color: #0f172a; border: none;">0 vendas</span>
+      </div>
+
+      <div id="historicoListContainer"></div>
+    </div>
+
+    <nav class="bottom-nav-bar">
+      <button type="button" class="nav-item-btn active" onclick="scrollToTop()">Leitor QR</button>
+      <button type="button" class="nav-item-btn" onclick="scrollToHistory()">Histórico</button>
+    </nav>
+  </div>
+
+  <!-- MODAL DE TRANSAÇÃO 50/50 -->
+  <div id="modalVenda" class="modal-overlay" style="display: none;">
+    <div class="modal-card-venda">
+      <h3 style="font-size: 1.15rem; font-weight: 800; color: #fff;">Registar Venda Fresh</h3>
+      <p style="font-size: 0.8rem; color: #94a3b8; margin-bottom: 1rem;" id="modalCartaoDesc">Cartão: BFP-1001</p>
+
+      <div class="form-group">
+        <label>Produtos Vendidos</label>
+        <input type="text" id="modalProdutosInput" class="form-control" value="Fruta e Legumes Frescos">
+      </div>
+
+      <div class="form-group">
+        <label>Valor Total da Compra (€)</label>
+        <input type="number" step="0.01" id="modalValorInput" oninput="calcularModal5050()" class="form-control" style="font-size: 1.5rem; font-weight: 800; color: #10b981;" placeholder="0,00" required>
+      </div>
+
+      <div class="split-box-modal">
+        <div>
+          <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8;">FAMÍLIA (50%)</div>
+          <div style="font-size: 1.25rem; font-weight: 800; color: #10b981;" id="modalFam50">0,00 €</div>
+        </div>
+        <div>
+          <div style="font-size: 0.7rem; font-weight: 700; color: #94a3b8;">EGOR (50%)</div>
+          <div style="font-size: 1.25rem; font-weight: 800; color: #38bdf8;" id="modalEgor50">0,00 €</div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem; margin-top: 1.25rem;">
+        <button type="button" onclick="fecharModalVenda()" class="btn-voltar" style="flex: 1; padding: 0.8rem;">Cancelar</button>
+        <button type="button" onclick="confirmarVendaFinal()" class="btn-green-submit" style="flex: 1; margin: 0;">Confirmar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/db.js"></script>
+
+  <script>
+    let currentVendedor = null;
+    let activeCardId = null;
+	
+    function renderFamiliasSimGrid() {
+      const container = document.getElementById('familiasSimGrid');
+      if (!container) return;
+
+      container.innerHTML = '';
+
+      // Procura as famílias guardadas na base de dados
+      const familias = (typeof db !== 'undefined' && db.getFamilias) ? db.getFamilias() : [];
+
+      // Filtra para exibir apenas famílias existentes (e ativas, se aplicável)
+      const familiasAtivas = familias.filter(f => f.ativo !== false);
+
+      if (familiasAtivas.length === 0) {
+        container.innerHTML = `<div style="grid-column: 1 / -1; font-size: 0.8rem; color: #64748b; text-align: center; padding: 0.5rem;">Nenhuma família registada no sistema.</div>`;
+        return;
+      }
+
+      // Cria um botão dinâmico para cada cartão existente
+      familiasAtivas.forEach(f => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn-sim-card';
+        btn.onclick = () => simularLeitura(f.id);
+        btn.textContent = f.id;
+
+        container.appendChild(btn);
+      });
+    }
+
+    // PREENCHIMENTO SEGURO DA LISTA DE COMERCIANTES
+    function initVendedoresSelect() {
+      const select = document.getElementById('vendSelect');
+      if (!select) return;
+
+      select.innerHTML = '';
+
+      let vendedores = [];
+      try {
+        if (typeof db !== 'undefined' && db.getVendedores) {
+          vendedores = db.getVendedores();
+          if (!vendedores || vendedores.length === 0) {
+            db.addVendedor({ id: 'VEND-01', banca: 'Banca do Zé (Frutas)', resp: 'José Santos', pin: '1234', ativo: true });
+            db.addVendedor({ id: 'VEND-02', banca: 'Frutaria Central', resp: 'Ana Martins', pin: '1234', ativo: true });
+            vendedores = db.getVendedores();
+          }
+        }
+      } catch (err) {
+        console.warn('Erro ao aceder ao db.js, a usar valores padrão:', err);
+      }
+
+      // Se por algum motivo o db.js falhar, garante vendedores na lista
+      if (!vendedores || vendedores.length === 0) {
+        vendedores = [
+          { id: 'VEND-01', banca: 'Banca do Zé (Frutas)', pin: '1234' },
+          { id: 'VEND-02', banca: 'Frutaria Central', pin: '1234' }
+        ];
+      }
+
+      vendedores.forEach((v, index) => {
+        const opt = document.createElement('option');
+        opt.value = v.id;
+        const nomeBanca = v.banca || v.nome || v.estabelecimento || `Banca ${v.id}`;
+        opt.textContent = `${nomeBanca} (${v.id})`;
+        opt.style.backgroundColor = '#0f172a';
+        opt.style.color = '#ffffff';
+        select.appendChild(opt);
+      });
+    }
+
+    // AUTENTICAÇÃO COM COMPARAÇÃO FLEXÍVEL DE PIN
+    function handleLoginVendedor(e) {
+      e.preventDefault();
+      const selectedId = document.getElementById('vendSelect').value;
+      const inputPin = document.getElementById('vendPinInput').value.trim();
+
+      if (!selectedId) {
+        alert('Por favor, selecione uma banca da lista.');
+        return;
+      }
+
+      let vendedores = (typeof db !== 'undefined' && db.getVendedores) ? db.getVendedores() : [];
+      let vend = vendedores.find(v => v.id === selectedId);
+
+      // Fallback de segurança se vend não for encontrado na DB
+      if (!vend && selectedId === 'VEND-01') vend = { id: 'VEND-01', banca: 'Banca do Zé (Frutas)', pin: '1234' };
+      if (!vend && selectedId === 'VEND-02') vend = { id: 'VEND-02', banca: 'Frutaria Central', pin: '1234' };
+
+      if (!vend) {
+        alert('Comerciante não encontrado no sistema.');
+        return;
+      }
+
+      // Converte ambos para Texto para evitar erros entre Número (1234) e String ("1234")
+      const pinGuardado = String(vend.pin || '1234').trim();
+      
+      if (pinGuardado !== inputPin) {
+        alert(`Senha incorreta! Tente novamente!`);
+        return;
+      }
+
+      currentVendedor = vend;
+      document.getElementById('vendedorTopBanca').textContent = vend.banca || vend.nome || vend.id;
+
+      renderFamiliasSimGrid();
+      renderHistorico();
+
+      document.getElementById('step1_login').style.display = 'none';
+      document.getElementById('step2_dashboard').style.display = 'flex';
+    }
+
+    function simularLeitura(cartaoId) { abrirModalVenda(cartaoId); }
+
+    function validarCodigoManual() {
+      const code = document.getElementById('manualCodeInput').value.trim().toUpperCase();
+      if (!code) { alert('Digite um código de cartão (Ex: BFP-1001).'); return; }
+      abrirModalVenda(code);
+    }
+
+    function abrirModalVenda(cartaoId) {
+      activeCardId = cartaoId;
+      document.getElementById('modalCartaoDesc').textContent = `Cartão Lido: ${cartaoId}`;
+      document.getElementById('modalValorInput').value = '';
+      calcularModal5050();
+      document.getElementById('modalVenda').style.display = 'flex';
+    }
+
+    function fecharModalVenda() {
+      document.getElementById('modalVenda').style.display = 'none';
+      activeCardId = null;
+    }
+
+    function calcularModal5050() {
+      const total = parseFloat(document.getElementById('modalValorInput').value) || 0;
+      const parte = total * 0.5;
+      document.getElementById('modalFam50').textContent = parte.toFixed(2).replace('.', ',') + ' €';
+      document.getElementById('modalEgor50').textContent = parte.toFixed(2).replace('.', ',') + ' €';
+    }
+
+    function confirmarVendaFinal() {
+      if (!currentVendedor || !activeCardId) return;
+      const valorTotal = parseFloat(document.getElementById('modalValorInput').value);
+      const produtos = document.getElementById('modalProdutosInput').value.trim();
+
+      if (isNaN(valorTotal) || valorTotal <= 0) {
+        alert('Insira um valor total válido para a compra.');
+        return;
+      }
+
+      try {
+        if (typeof db !== 'undefined' && db.registarVenda) {
+          const novaTx = db.registarVenda(currentVendedor.id, activeCardId, produtos, valorTotal);
+          alert(`✔ Venda Registada!\nTotal: ${valorTotal.toFixed(2)}€\nFamília Paga: ${novaTx.fam50.toFixed(2)}€ | EGOR: ${novaTx.egor50.toFixed(2)}€`);
+        } else {
+          alert(`✔ Venda Registada (Modo Simulação)!\nTotal: ${valorTotal.toFixed(2)}€`);
+        }
+        fecharModalVenda();
+        document.getElementById('manualCodeInput').value = '';
+        renderHistorico();
+      } catch (err) {
+        alert('⚠️ ' + err.message);
+      }
+    }
+
+    function renderHistorico() {
+      if (!currentVendedor) return;
+      const container = document.getElementById('historicoListContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      let transacoes = (typeof db !== 'undefined' && db.getTransacoes) ? db.getTransacoes() : [];
+      let familias = (typeof db !== 'undefined' && db.getFamilias) ? db.getFamilias() : [];
+      const nomeComerciante = currentVendedor.banca || currentVendedor.nome;
+
+      // Filtra mantendo apenas vendas do vendedor ATUAL cujas famílias AINDA EXISTEM
+      const minhasVendas = transacoes.filter(t => {
+        const eMinhaVenda = (t.vendedorId === currentVendedor.id || t.vendedor === nomeComerciante);
+        if (!eMinhaVenda) return false;
+
+        return familias.some(f => {
+          const fId = (f.id || '').trim().toLowerCase();
+          const fNome = (f.nome || '').trim().toLowerCase();
+          const tFam = (t.familia || '').trim().toLowerCase();
+          const tFamId = (t.familiaId || '').trim().toLowerCase();
+
+          return (fId && (tFam.includes(fId) || tFamId === fId)) || 
+                 (fNome && tFam.includes(fNome));
+        });
+      });
+      
+      const badge = document.getElementById('vendasCountBadge');
+      if (badge) badge.textContent = `${minhasVendas.length} vendas`;
+
+      if (minhasVendas.length === 0) {
+        container.innerHTML = `<div style="text-align: center; color: #64748b; font-size: 0.825rem; padding: 1.5rem 0;">Sem vendas registadas hoje nesta banca.</div>`;
+        return;
+      }
+
+      minhasVendas.forEach(t => {
+        const row = document.createElement('div');
+        row.className = 'history-item-row';
+        const nomeBeneficiario = t.familia.split('(')[0].trim();
+        const horaVenda = t.data.includes(',') ? t.data.split(',')[1].trim() : t.data;
+
+        row.innerHTML = `
+          <div>
+            <div class="hist-name">${nomeBeneficiario}</div>
+            <div class="hist-time">${horaVenda}</div>
+          </div>
+          <div>
+            <div class="hist-total">${t.total.toFixed(2).replace('.', ',')} €</div>
+            <div class="hist-egor">EGOR: ${t.egor50.toFixed(2).replace('.', ',')} €</div>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    function scrollToHistory() { 
+      const elem = document.getElementById('sectionHistorico');
+      if (elem) elem.scrollIntoView({ behavior: 'smooth' }); 
+    }
+
+    function logoutVendedor() {
+      currentVendedor = null;
+      document.getElementById('step2_dashboard').style.display = 'none';
+      document.getElementById('step1_login').style.display = 'flex';
+      initVendedoresSelect();
+    }
+
+    document.addEventListener('DOMContentLoaded', initVendedoresSelect);
+    window.onload = initVendedoresSelect;
+  </script>
+</body>
+</html>

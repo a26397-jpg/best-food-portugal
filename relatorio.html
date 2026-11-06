@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Relatório Geral de Vendas por Frutaria</title>
+  <!-- BIBLIOTECA PARA EXPORTAÇÃO DIRETA PARA PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+    
+    body { 
+      background: #0f172a; 
+      color: #f8fafc; 
+      padding: 2rem; 
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    
+    .page-container { max-width: 960px; margin: 0 auto; }
+    
+    .main-header { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      background: #1e293b; 
+      padding: 2rem; 
+      border-radius: 16px; 
+      border: 1px solid rgba(56, 189, 248, 0.3); 
+      margin-bottom: 2rem; 
+    }
+    
+    .main-title { font-size: 1.75rem; font-weight: 800; color: #fff; }
+    .main-sub { color: #94a3b8; font-size: 0.9rem; margin-top: 0.35rem; }
+
+    /* Estilo dos Sub-Relatórios por Frutaria */
+    .sub-report-card { 
+      background: #1e293b; 
+      border-radius: 14px; 
+      border: 1px solid #334155; 
+      padding: 1.75rem; 
+      margin-bottom: 2rem; 
+    }
+    
+    .vendor-title { 
+      font-size: 1.3rem; 
+      font-weight: 700; 
+      color: #38bdf8; 
+      display: flex; 
+      align-items: center; 
+      justify-content: space-between; 
+      border-bottom: 1px solid #334155; 
+      padding-bottom: 0.85rem; 
+      margin-bottom: 1.25rem; 
+    }
+    
+    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+    .stat-box { background: #0f172a; padding: 1rem; border-radius: 8px; border: 1px solid #334155; }
+    .stat-label { font-size: 0.725rem; color: #94a3b8; font-weight: 700; text-transform: uppercase; }
+    .stat-val { font-size: 1.3rem; font-weight: 800; margin-top: 0.25rem; }
+
+    table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+    th { background: #0f172a; color: #94a3b8; text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid #334155; }
+    td { padding: 0.75rem 1rem; border-bottom: 1px solid #334155; color: #cbd5e1; }
+    tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+
+    .actions { display: flex; justify-content: flex-end; gap: 0.75rem; }
+    
+    .btn-print { 
+      background: #1e293b; 
+      color: #38bdf8; 
+      border: 1px solid rgba(56, 189, 248, 0.4); 
+      padding: 0.75rem 1.25rem; 
+      border-radius: 8px; 
+      font-weight: 700; 
+      cursor: pointer; 
+      transition: all 0.2s; 
+    }
+    .btn-print:hover { background: rgba(56, 189, 248, 0.1); }
+    
+    .btn-pdf { 
+      background: #10b981; 
+      color: #ffffff; 
+      border: none; 
+      padding: 0.75rem 1.25rem; 
+      border-radius: 8px; 
+      font-weight: 700; 
+      cursor: pointer; 
+      transition: all 0.2s; 
+    }
+    .btn-pdf:hover { background: #059669; }
+
+    /* ==========================================================================
+       ESTILOS PARA TEMA BRANCO (IMPRESSÃO E EXPORTAÇÃO PDF)
+       ========================================================================== */
+    @media print, .pdf-light-theme {
+      body, .page-container { 
+        background: #ffffff !important; 
+        color: #0f172a !important; 
+        padding: 0 !important; 
+      }
+      .main-header { 
+        background: #f8fafc !important; 
+        border: 1px solid #cbd5e1 !important; 
+      }
+      .main-title { color: #0f172a !important; }
+      .main-sub { color: #475569 !important; }
+      
+      .sub-report-card { 
+        background: #ffffff !important; 
+        border: 1px solid #cbd5e1 !important; 
+        box-shadow: none !important;
+        page-break-inside: avoid; 
+      }
+      .vendor-title { 
+        color: #0284c7 !important; 
+        border-bottom: 1px solid #cbd5e1 !important; 
+      }
+      .stat-box { 
+        background: #f8fafc !important; 
+        border: 1px solid #cbd5e1 !important; 
+      }
+      .stat-label { color: #64748b !important; }
+      .stat-val { color: #0f172a !important; }
+      
+      th { 
+        background: #f1f5f9 !important; 
+        color: #334155 !important; 
+        border-bottom: 2px solid #cbd5e1 !important; 
+      }
+      td { 
+        color: #1e293b !important; 
+        border-bottom: 1px solid #e2e8f0 !important; 
+      }
+      tr:nth-child(even) { background: #f8fafc !important; }
+      
+      .actions { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="page-container" id="conteudoRelatorio">
+    <div class="main-header">
+      <div>
+        <h1 class="main-title">Relatório Financeiro de Comparticipação (50%)</h1>
+        <p class="main-sub">Fundação EGOR · Emissão: <span id="lblData"></span></p>
+      </div>
+      <div class="actions" data-html2canvas-ignore="true">
+        <button class="btn-print" onclick="window.print()"> Imprimir</button>
+        <button class="btn-pdf" onclick="exportarPDF()"> Exportar PDF</button>
+      </div>
+    </div>
+
+    <!-- Contentores dos sub-relatórios por frutaria -->
+    <div id="containerSubRelatorios"></div>
+  </div>
+
+  <script src="js/db.js"></script>
+  <script>
+    async function exportarPDF() {
+      const elemento = document.body;
+      elemento.classList.add('pdf-light-theme');
+
+      const opt = {
+        margin:       [0.3, 0.3, 0.3, 0.3],
+        filename:     `relatorio_vendas_${new Date().toISOString().slice(0,10)}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, backgroundColor: '#ffffff' },
+        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+      };
+
+      try {
+        await html2pdf().set(opt).from(document.getElementById('conteudoRelatorio')).save();
+      } catch (err) {
+        console.error('Erro ao gerar PDF:', err);
+      } finally {
+        elemento.classList.remove('pdf-light-theme');
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('lblData').textContent = new Date().toLocaleString('pt-PT');
+      
+      const urlParams = new URLSearchParams(window.location.search);
+      const filtroVendedor = urlParams.get('vendedorId') || 'TODOS';
+
+      const transacoes = typeof db !== 'undefined' ? db.getTransacoes() : [];
+      const vendedores = typeof db !== 'undefined' ? db.getVendedores() : [];
+      
+      const container = document.getElementById('containerSubRelatorios');
+      container.innerHTML = '';
+
+      // Identificar o comerciante selecionado se não for TODOS
+      let vendedorAlvo = null;
+      if (filtroVendedor !== 'TODOS') {
+        vendedorAlvo = vendedores.find(v => 
+          (v.id && String(v.id) === String(filtroVendedor)) || 
+          (v.banca && v.banca.toLowerCase() === filtroVendedor.toLowerCase())
+        );
+      }
+
+      let grupos = {};
+
+      // 1. Filtrar transações com verificação rigorosa de comerciante
+      transacoes.forEach(t => {
+        if (!t) return;
+        const nomeVend = t.vendedor || 'Outros Comerciantes';
+        const idVend = t.vendedorId ? String(t.vendedorId) : '';
+
+        if (filtroVendedor !== 'TODOS') {
+          const batePorId = idVend && String(filtroVendedor) === idVend;
+          const batePorNome = vendedorAlvo ? 
+            nomeVend.toLowerCase().trim() === vendedorAlvo.banca.toLowerCase().trim() : 
+            nomeVend.toLowerCase().includes(filtroVendedor.toLowerCase());
+
+          if (!batePorId && !batePorNome) {
+            return; // Não pertence ao comerciante filtrado
+          }
+        }
+
+        const chaveGrupo = vendedorAlvo ? vendedorAlvo.banca : nomeVend;
+        if (!grupos[chaveGrupo]) {
+          grupos[chaveGrupo] = [];
+        }
+        grupos[chaveGrupo].push(t);
+      });
+
+      // 2. Se o comerciante existe mas não tem vendas (ex: Vegetaria Peras), inicializa o grupo vazio
+      if (vendedorAlvo && !grupos[vendedorAlvo.banca]) {
+        grupos[vendedorAlvo.banca] = [];
+      }
+
+      const nomesFrutarias = Object.keys(grupos);
+
+      if (nomesFrutarias.length === 0) {
+        container.innerHTML = '<div class="sub-report-card" style="text-align:center; color:#94a3b8; padding: 2.5rem;">Nenhuma transação encontrada para a seleção efetuada.</div>';
+        return;
+      }
+
+      // 3. Renderizar cada sub-relatório
+      nomesFrutarias.forEach(nomeFrutaria => {
+        const vendas = grupos[nomeFrutaria] || [];
+        const totalBruto = vendas.reduce((acc, v) => acc + (parseFloat(v.total) || 0), 0);
+        const totalFam = vendas.reduce((acc, v) => acc + (parseFloat(v.fam50) || 0), 0);
+        const totalEgor = vendas.reduce((acc, v) => acc + (parseFloat(v.egor50) || 0), 0);
+
+        const linhas = vendas.length > 0 ? vendas.map(v => `
+          <tr>
+            <td style="color: #64748b;">${v.id || '-'}</td>
+            <td>${v.data || '-'}</td>
+            <td><strong>${v.familia || '-'}</strong></td>
+            <td style="font-style: italic;">${v.produtos || '-'}</td>
+            <td><strong>${(v.total || 0).toFixed(2).replace('.', ',')} €</strong></td>
+            <td style="color: #10b981;">${(v.fam50 || 0).toFixed(2).replace('.', ',')} €</td>
+            <td style="color: #38bdf8; font-weight:700;">${(v.egor50 || 0).toFixed(2).replace('.', ',')} €</td>
+          </tr>
+        `).join('') : `
+          <tr>
+            <td colspan="7" style="text-align: center; color: #94a3b8; padding: 1.5rem; font-style: italic;">
+              Sem vendas registadas para este comerciante até ao momento.
+            </td>
+          </tr>
+        `;
+
+        const card = document.createElement('div');
+        card.className = 'sub-report-card';
+        card.innerHTML = `
+          <div class="vendor-title">
+            <span> Sub-Relatório: ${nomeFrutaria}</span>
+            <span style="font-size: 0.85rem; color: #94a3b8;">${vendas.length} transação(ões)</span>
+          </div>
+
+          <div class="stats-row">
+            <div class="stat-box">
+              <div class="stat-label">Total Vendas</div>
+              <div class="stat-val" style="color: #fff;">${totalBruto.toFixed(2).replace('.', ',')} €</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Pago por Famílias (50%)</div>
+              <div class="stat-val" style="color: #10b981;">${totalFam.toFixed(2).replace('.', ',')} €</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Transferência EGOR (50%)</div>
+              <div class="stat-val" style="color: #38bdf8;">${totalEgor.toFixed(2).replace('.', ',')} €</div>
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Data / Hora</th>
+                <th>Família</th>
+                <th>Produtos</th>
+                <th>Total</th>
+                <th>Família (50%)</th>
+                <th>EGOR (50%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${linhas}
+            </tbody>
+          </table>
+        `;
+        container.appendChild(card);
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backoffice Fundação EGOR — Best Food Portugal</title>
+  <link rel="stylesheet" href="css/2styles.css">
+
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#060913">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Best Food Portugal">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+  <!-- REGISTO DO SERVICE WORKER DA PWA -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('PWA Service Worker Ativo no escopo:', reg.scope))
+          .catch(err => console.error('Erro ao registar Service Worker PWA:', err));
+      });
+    }
+  </script>
+</head>
+<body>
+
+  <!-- CABEÇALHO INSTITUCIONAL -->
+  <header class="header">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 8C15 8 13.5 9.5 13.5 11.5C13.5 13.5 15 15 17 15C19 15 20.5 13.5 20.5 11.5C20.5 9.5 19 8 7 8ZM7 8C5 8 3.5 9.5 3.5 11.5C3.5 13.5 5 15 7 15C9 15 10.5 13.5 10.5 11.5C10.5 9.5 9 8 7 8ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"/></svg>
+      </div>
+      <div>
+        <div class="brand-title">
+          Best Food Portugal
+          <span class="brand-pill">Piloto Freguesia</span>
+        </div>
+        <div class="brand-sub">Algoritmo Soluções Informáticas × Fundação EGOR</div>
+      </div>
+    </div>
+
+    <div id="topUserBadge" class="user-top-profile" style="display: none;">
+      <div class="gestor-badge-box">
+        <div class="avatar-circle">E</div>
+        <div style="text-align: left;">
+          <div style="font-size: 0.85rem; font-weight: 700; color: #fff;">Gestor Fundação EGOR</div>
+          <div style="font-size: 0.725rem; color: #10b981;">Backoffice EGOR ●</div>
+        </div>
+      </div>
+      <button onclick="logout()" class="btn-logout">
+        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5c-1.11 0-2 .9-2 2v4h2V5h14v14H5v-4H3v4c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2z"/></svg>
+        Terminar Sessão
+      </button>
+    </div>
+  </header>
+
+  <!-- PASSO 1: LOGIN -->
+  <main id="step1_login" class="container">
+    <div class="badge-portal">
+      <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+      Portal Tecnológico de Alimentação Comparticipada (Fruta & Hortícolas)
+    </div>
+
+    <h1 class="main-heading">Selecione o Perfil de Autenticação</h1>
+    <p class="sub-heading">
+      Plataforma de gestão financeira e logística de produtos frescos com comparticipação direta de 50% pela Fundação EGOR.
+    </p>
+
+    <div class="auth-card">
+      <div class="auth-card-top">
+        <div class="icon-box-portal">
+          <svg class="icon-svg" viewBox="0 0 24 24">
+            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+          </svg>
+        </div>
+        <div style="display: flex; align-items: center; gap: 0.75rem;">
+          <span class="badge-tag blue">Gestão Institucional</span>
+          <a href="menu.html" class="btn-back">Sair</a>
+        </div>
+      </div>
+
+      <h2 class="auth-card-title">Backoffice Fundação EGOR</h2>
+
+      <form id="formStep1" onsubmit="goToStep2(event)">
+        <div class="form-group">
+          <label>Email Institucional</label>
+          <input type="email" id="loginEmail" class="form-control" placeholder="" required>
+        </div>
+        <div class="form-group">
+          <label>Palavra-passe</label>
+          <input type="password" id="loginPass" class="form-control" required>
+        </div>
+        
+        <div class="info-box">
+          <svg class="icon-svg" style="color: #38bdf8; flex-shrink: 0;" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+          </svg>
+          <span>Acesso restrito a utilizadores autorizados. Verificação de segurança necessária no passo seguinte.</span>
+        </div>
+        
+        <button type="submit" class="btn-primary">Continuar para Verificação</button>
+        <button type="button" onclick="openModalNovoGestor()" class="btn-modal-cancel" style="width: 100%; margin-top: 0.75rem; border: 1px dashed rgba(56, 189, 248, 0.4); color: #38bdf8;">+ Criar Novo Gestor</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- MODAL: CRIAR NOVO GESTOR -->
+  <div id="modalNovoGestor" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header-title">
+        <h2>Registar Novo Gestor</h2>
+        <button type="button" onclick="closeModalNovoGestor()" class="modal-close-btn">✕</button>
+      </div>
+
+      <form id="formNovoGestor" onsubmit="guardarNovoGestor(event)">
+        <div class="info-box" style="margin-bottom: 1rem;">
+          <svg class="icon-svg" style="color: #38bdf8; flex-shrink: 0;" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+          </svg>
+          <span>Apenas autorizada a criação por credenciais do administrador.</span>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>E-mail Autorizador Mestre</label>
+            <input type="email" id="masterEmail" class="form-control" placeholder="" required>
+          </div>
+          <div class="form-group">
+            <label>Palavra-passe Mestre</label>
+            <input type="password" id="masterPass" class="form-control" placeholder="" required>
+          </div>
+        </div>
+
+        <hr style="border-color: rgba(255,255,255,0.08); margin: 1rem 0;">
+
+        <div class="form-group">
+          <label>E-mail do Novo Gestor</label>
+          <input type="email" id="novoGestorEmail" class="form-control" placeholder="exemplo@egor.pt" required>
+        </div>
+
+        <div class="form-group">
+          <label>Palavra-passe do Novo Gestor</label>
+          <input type="password" id="novoGestorPass" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" onclick="closeModalNovoGestor()" class="btn-modal-cancel">Cancelar</button>
+          <button type="submit" class="btn-modal-save-blue">Guardar Gestor</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- PASSO 2: MODAL 2FA -->
+  <div id="step2_2fa" class="modal-overlay" style="display: none;">
+    <div class="modal-2fa">
+      <div class="icon-badge" style="margin: 0 auto 1.25rem auto; width: 3.5rem; height: 3.5rem; border-radius: 1rem;">
+        <svg class="icon-svg" style="width: 1.75rem; height: 1.75rem;" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+      </div>
+      <h2 style="font-size: 1.4rem; font-weight: 800; color: #fff; margin-bottom: 0.5rem;">Autenticação em 2 Fatores</h2>
+      <p style="font-size: 0.875rem; color: #94a3b8; line-height: 1.5;">
+        Insira o código de verificação temporário de 6 dígitos enviado <span id="email2FADisplay" style="color: #fff; font-weight: 700;"></span>
+      </p>
+      <form onsubmit="goToStep3(event)">
+        <input 
+          type="text" 
+          id="input2FA" 
+          class="input-2fa" 
+          maxlength="6" 
+          inputmode="numeric" 
+          pattern="[0-9]*" 
+          placeholder="000000" 
+          autocomplete="off" 
+          required>
+        <div style="font-size: 0.8rem; color: #64748b; margin-bottom: 1.5rem;">
+          Código de verificação temporário enviado por e-mail/SMS.
+        </div>
+        <div style="display: flex; gap: 0.85rem;">
+          <button type="button" onclick="cancel2FA()" class="btn-modal-cancel" style="flex: 1;">Cancelar</button>
+          <button type="submit" class="btn-primary" style="flex: 1;">Confirmar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- PASSO 3: DASHBOARD OPERACIONAL -->
+  <div id="step3_dashboard" class="dashboard-wrapper" style="display: none;">
+    <div class="dashboard-header-card">
+      <div style="display: flex; align-items: center; gap: 1rem;">
+        <div class="icon-badge" style="width: 3.25rem; height: 3.25rem; border-radius: 0.85rem;">
+          <svg class="icon-svg" style="width: 1.5rem; height: 1.5rem;" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+        </div>
+        <div>
+          <div style="display: flex; align-items: center; gap: 0.65rem;">
+            <h1 style="font-size: 1.45rem; font-weight: 800; color: #fff;">Backoffice de Gestão Operacional</h1>
+            <span class="brand-pill" style="background-color: rgba(16, 185, 129, 0.12); color: #10b981; border-color: rgba(16, 185, 129, 0.3);">Produção Piloto</span>
+          </div>
+          <p style="font-size: 0.875rem; color: #94a3b8; margin-top: 0.2rem;">
+            Algoritmo × Fundação EGOR · Gestão Integrada de Frutas/Vegetais e Acerto 50/50.
+          </p>
+        </div>
+      </div>
+
+      <!-- BOTÕES DAS ABAS DE NAVEGAÇÃO -->
+      <div class="nav-tabs">
+        <button id="btnTabIndicadores" class="tab-btn active" onclick="switchTab('indicadores')">Indicadores</button>
+        <button id="btnTabFamilias" class="tab-btn" onclick="switchTab('familias')">Famílias</button>
+        <button id="btnTabVendedores" class="tab-btn" onclick="switchTab('vendedores')">Vendedores</button>
+        <button id="btnTabAcerto" class="tab-btn" onclick="switchTab('acerto')">Acerto 50/50</button>
+        <button id="btnTabGestores" class="tab-btn" onclick="switchTab('gestores')">Gestores</button>
+      </div>
+    </div>
+
+    <!-- ABA 1: INDICADORES -->
+    <div id="tabContentIndicadores" class="tab-content active">
+      <div class="dashboard-grid">
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <div class="stat-label">TOTAL SALDOS CARREGADOS</div>
+            <div class="icon-badge">
+              <svg class="icon-svg" viewBox="0 0 24 24"><path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="cardTotalLoaded">0,00 €</div>
+          <div class="stat-sub" style="color: #10b981;">
+            <span class="trend-badge trend-up">Atualizado</span> Orçamento Atribuído
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <div class="stat-label">COMPARTICIPAÇÃO EGOR (50%)</div>
+            <div class="icon-badge" style="background-color: rgba(16, 185, 129, 0.12); color: #10b981; border-color: rgba(16, 185, 129, 0.3);">
+              <svg class="icon-svg" viewBox="0 0 24 24"><path d="M16 6l2.29 2.29-4.88 4.88-4-4L2 16.59 3.41 18l6-6 4 4 6.3-6.29L22 12V6z"/></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="cardEgorShare" style="color: #38bdf8;">0,00 €</div>
+          <div class="stat-sub" style="color: #94a3b8;">
+            <span class="trend-badge trend-up">50%</span> Liquidado aos Comerciantes
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <div class="stat-label">TRANSAÇÕES VALIDADAS</div>
+            <div class="icon-badge" style="background-color: rgba(168, 85, 247, 0.12); color: #a855f7; border-color: rgba(168, 85, 247, 0.3);">
+              <svg class="icon-svg" viewBox="0 0 24 24"><path d="M19 3h-4.18C14.4 1.84 13.3 1 12 1c-1.3 0-2.4.84-2.82 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 0c.55 0 1 .45 1 1s-.45 1-1 1-1-.45-1-1 .45-1 1-1zm2 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="cardTotalTx">0</div>
+          <div class="stat-sub" style="color: #a855f7;">
+            <span class="trend-badge trend-up">100%</span> Validadas na PWA
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-card-header">
+            <div class="stat-label">VENDEDORES ATIVOS</div>
+            <div class="icon-badge" style="background-color: rgba(16, 185, 129, 0.12); color: #10b981; border-color: rgba(16, 185, 129, 0.3);">
+              <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8h16v10z"/></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="cardVendAtivos">0</div>
+          <div class="stat-sub" style="color: #10b981;">
+            Comércio Local Aderente
+          </div>
+        </div>
+      </div>
+
+      <div class="operations-card">
+        <div>
+          <h2 style="font-size: 1.25rem; font-weight: 800; color: #fff; margin-bottom: 0.35rem;">Operações Globais & Manutenção</h2>
+          <p style="font-size: 0.875rem; color: #94a3b8; max-width: 42rem; line-height: 1.5;">
+            Execute a renovação mensal ou apague por completo os dados salvos anteriormente no navegador.
+          </p>
+        </div>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+          <button onclick="handleCarregarSaldos()" class="btn-action-green">
+            Carregamento Mensal Global
+          </button>
+        </div>
+      </div>
+
+      <div class="logs-card">
+        <div class="logs-header-bar">
+          <h3 style="font-size: 1rem; font-weight: 800; color: #fff;">Registo de Atividade e Auditoria Institucional</h3>
+          <div class="logs-controls">
+            <input type="text" id="logsSearchInput" oninput="renderLogs()" placeholder="🔍 Pesquisar por acção, nome ou hora..." class="logs-search-input">
+            <button id="btnToggleLogs" onclick="toggleExpandLogs()" class="btn-sm btn-sm-gray">Ver Todas</button>
+          </div>
+        </div>
+        <div class="logs-list" id="logsList"></div>
+      </div>
+    </div>
+
+    <!-- ABA 2: FAMÍLIAS BENEFICIÁRIAS -->
+    <div id="tabContentFamilias" class="tab-content">
+      <div class="panel-card">
+        <div class="panel-top-bar">
+          <div>
+            <h2 class="section-title">Gestão de Famílias Beneficiárias & Cartões</h2>
+            <p class="section-sub">Lista de famílias registadas. Permite adicionar, remover saldo e eliminar registos.</p>
+          </div>
+          <button onclick="openModalFamilia()" class="btn-primary" style="width: auto; padding: 0.65rem 1.3rem;">
+            Registar Nova Família
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>CARTÃO</th>
+                <th>BENEFICIÁRIO PRINCIPAL</th>
+                <th>NIF</th>
+                <th>CONTACTO</th>
+                <td style="letter-spacing: 0.15em; font-weight: 800; color: #10b981;">SENHA</td>
+                <th>QUOTA MENSAL</th>
+                <th>SALDO DISPONÍVEL</th>
+                <th>ESTADO</th>
+                <th>AÇÕES</th>
+                <th>GESTÃO DE SALDO</th>
+                <th>ELIMINAR</th>
+              </tr>
+            </thead>
+            <tbody id="familiasTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA 3: COMERCIANTES & BANCAS -->
+    <div id="tabContentVendedores" class="tab-content">
+      <div class="panel-card">
+        <div class="panel-top-bar">
+          <div>
+            <h2 class="section-title">Comerciantes & Bancas de Mercado Registadas</h2>
+            <p class="section-sub">Gestão de acessos dos comerciantes locais.</p>
+          </div>
+          <button onclick="openModalVendedor()" class="btn-action-green">
+            Registar Vendedor
+          </button>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>ID VENDEDOR</th>
+                <th>ESTABELECIMENTO / BANCA</th>
+                <th>RESPONSÁVEL</th>
+                <th>SENHA</th>
+                <th>AÇÕES</th>
+                <th>ELIMINAR</th>
+              </tr>
+            </thead>
+            <tbody id="vendedoresTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+ <!-- ABA 4: RELATÓRIO DE ACERTO 50/50 -->
+<div id="tabContentAcerto" class="tab-content">
+  <div class="panel-card">
+    <div class="panel-top-bar" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+      <div>
+        <h2 class="section-title">Relatório de Acerto Financeiro (50% Comparticipação EGOR)</h2>
+        <p class="section-sub">Histórico detalhado de transações validadas.</p>
+      </div>
+
+      <!-- BARRA DE AÇÕES (TODOS OS ELEMENTOS NA MESMA LINHA) -->
+      <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: nowrap;">
+        <select id="acertoCampoSelect" onchange="renderTabelaAcerto()" class="form-control" style="width: auto; background: #0f172a; color: #fff; border: 1px solid rgba(255,255,255,0.15); padding: 0.4rem 0.6rem; border-radius: 0.5rem; font-size: 0.8rem; height: 36px;">
+          <option value="todos">Todas as Colunas</option>
+          <option value="id">ID Transação</option>
+          <option value="data">Data / Hora</option>
+          <option value="vendedor">Vendedor</option>
+          <option value="familia">Família Beneficiária</option>
+          <option value="produtos">Produtos Frescos</option>
+          <option value="total">Total Compra (€)</option>
+          <option value="fam50">Família (50%) (€)</option>
+          <option value="egor50">Fundação (50%) (€)</option>
+        </select>
+
+        <input 
+          type="text" 
+          id="acertoSearchInput" 
+          oninput="renderTabelaAcerto()" 
+          placeholder="Pesquisar..." 
+          class="logs-search-input" 
+          style="width: 140px; height: 36px; font-size: 0.8rem;">
+
+        <button onclick="exportarCSV()" class="btn-action-outline" style="height: 36px; padding: 0 0.75rem; font-size: 0.8rem; display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap; width: auto !important;">
+          <svg style="width: 13px; height: 13px; fill: currentColor;" viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+          Exportar CSV
+        </button>
+
+        <!-- BOTÃO COM LARGURA COMPACTA FIXADA -->
+        <button onclick="openModalSelecaoVendedor()" class="btn-action-green" style="height: 36px; padding: 0 0.85rem; font-size: 0.8rem; font-weight: 700; display: inline-flex; align-items: center; gap: 0.3rem; white-space: nowrap; width: auto !important; margin: 0;">
+          Relatório de Vendas
+        </button>
+      </div>
+    </div>
+
+    <!-- TABELA DE TRANSAÇÕES -->
+    <div class="table-responsive" style="margin-top: 1rem;">
+      <table>
+        <thead>
+          <tr>
+            <th>ID TRANSAÇÃO</th>
+            <th>DATA / HORA</th>
+            <th>VENDEDOR</th>
+            <th>FAMÍLIA BENEFICIÁRIA</th>
+            <th>PRODUTOS FRESCOS</th>
+            <th>TOTAL COMPRA</th>
+            <th>FAMÍLIA (50%)</th>
+            <th>FUNDAÇÃO (50%)</th>
+          </tr>
+        </thead>
+        <tbody id="transacoesTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+    <!-- ABA 5: GESTORES INSTITUCIONAIS -->
+    <div id="tabContentGestores" class="tab-content">
+      <div class="panel-card">
+        <div class="panel-top-bar">
+          <div>
+            <h2 class="section-title">Gestão de Gestores Autorizados</h2>
+            <p class="section-sub">Lista de gestores com permissão de login no portal Backoffice.</p>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table>
+            <thead>
+              <tr>
+                <th>EMAIL INSTITUCIONAL</th>
+                <th>DATA DE CRIAÇÃO</th>
+                <th>PERFIL</th>
+                <th>ELIMINAR</th>
+              </tr>
+            </thead>
+            <tbody id="gestoresTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODAL 1: NOVA FAMÍLIA -->
+  <div id="modalFamilia" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header-title">
+        <h2>Registar Nova Família Beneficiária</h2>
+        <button type="button" onclick="closeModalFamilia()" class="modal-close-btn">✕</button>
+      </div>
+
+      <form id="formFamilia" onsubmit="guardarFamilia(event)">
+        <div class="form-group">
+          <label>Nome Completo do Beneficiário</label>
+          <input type="text" id="famNome" class="form-control" placeholder="Ex: Maria Santos Silva" required>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>NIF</label>
+            <input type="text" id="famNif" class="form-control" placeholder="Ex: 234567890" required>
+          </div>
+          <div class="form-group">
+            <label>Telefone</label>
+            <input type="text" id="famTel" class="form-control" placeholder="Ex: 912345678" required>
+          </div>
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label>Quota Mensal (€)</label>
+            <input type="number" id="famQuota" class="form-control" value="40" required>
+          </div>
+          <div class="form-group">
+            <label>Senha / PIN de Acesso (4 Dígitos)</label>
+            <input type="password" id="famPin" class="form-control" placeholder="1234" maxlength="4" required>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" onclick="closeModalFamilia()" class="btn-modal-cancel">Cancelar</button>
+          <button type="submit" class="btn-modal-save-blue">Guardar Família</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: NOVO VENDEDOR -->
+  <div id="modalVendedor" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header-title">
+        <h2>Registar Novo Vendedor Aderente</h2>
+        <button type="button" onclick="closeModalVendedor()" class="modal-close-btn">✕</button>
+      </div>
+
+      <form id="formVendedor" onsubmit="guardarVendedor(event)">
+        <div class="form-group">
+          <label>Nome do Estabelecimento / Banca</label>
+          <input type="text" id="vendBanca" class="form-control" placeholder="Ex: Frutaria da Freguesia" required>
+        </div>
+        <div class="form-group">
+          <label>Responsável / Proprietário</label>
+          <input type="text" id="vendResp" class="form-control" placeholder="Ex: Carlos Silva" required>
+        </div>
+        <div class="form-group">
+          <label>Senha de Acesso (4 Dígitos)</label>
+          <input type="password" id="vendPin" class="form-control" placeholder="1234" maxlength="4" inputmode="numeric" pattern="[0-9]*" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" onclick="closeModalVendedor()" class="btn-modal-cancel">Cancelar</button>
+          <button type="submit" class="btn-modal-save-green">Guardar Vendedor</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  
+ <div id="modalSelecaoVendedor" class="modal-overlay" style="display: none;">
+  <div class="modal-card" style="max-width: 480px; background: #0f172a; border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 1rem; padding: 1.75rem;">
+    
+    <div style="text-align: center; margin-bottom: 1.5rem;">
+      <h2 style="font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 0.35rem;">Emissão de Liquidação & Relatórios</h2>
+      <p style="font-size: 0.825rem; color: #94a3b8;">Selecione uma frutaria específica ou consulte os sub-relatórios agrupados de todos os comerciantes.</p>
+    </div>
+
+    <form onsubmit="executarRelatorioVendedor(event)">
+      <div class="form-group" style="margin-bottom: 1.5rem;">
+        <label style="color: #38bdf8; font-weight: 700; margin-bottom: 0.5rem; display: block;">Selecione a Frutaria / Vendedor</label>
+        <select id="selectVendedorRelatorio" class="form-control" style="background: #1e293b; color: #fff; border: 1px solid rgba(255,255,255,0.2); height: 2.75rem; font-size: 0.95rem; width: 100%; border-radius: 0.5rem; padding: 0 0.75rem;" required>
+          <!-- Opções preenchidas via JS -->
+        </select>
+      </div>
+
+      <div style="display: flex; gap: 0.75rem;">
+        <button type="button" onclick="fecharModalSelecaoVendedor()" class="btn-modal-cancel" style="flex: 1;">Cancelar</button>
+        <button type="submit" class="btn-action-green" style="flex: 1.4; justify-content: center; height: 2.75rem; font-weight: 700;">
+          Gerar Relatório ➔
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+  <script src="js/db.js"></script>
+
+  <script>
+    let showingAllLogs = false;
+    let codigo2FAGerado = "";
+    let emailGestorAtual = "";
+
+    function renderTabelaAcerto() {
+      const familias = db.getFamilias();
+      const vendedores = db.getVendedores();
+
+      const transacoes = db.getTransacoes().filter(t => {
+        if (!t) return false;
+
+        const familiaExiste = familias.some(f => {
+          const fId = (f.id || '').trim().toLowerCase();
+          const fNome = (f.nome || '').trim().toLowerCase();
+          const tFam = (t.familia || '').trim().toLowerCase();
+          const tFamId = (t.familiaId || '').trim().toLowerCase();
+          return (fId && (tFam.includes(fId) || tFamId === fId)) || (fNome && tFam.includes(fNome));
+        });
+
+        const vendedorExiste = vendedores.some(v => {
+          const vId = (v.id || '').trim().toLowerCase();
+          const vBanca = (v.banca || '').trim().toLowerCase();
+          const vResp = (v.resp || '').trim().toLowerCase();
+          const tVend = (t.vendedor || '').trim().toLowerCase();
+          const tVendId = (t.vendedorId || '').trim().toLowerCase();
+          return (vId && (tVend.includes(vId) || tVendId === vId)) ||
+                 (vBanca && (tVend.includes(vBanca) || vBanca.includes(tVend))) ||
+                 (vResp && tVend.includes(vResp));
+        });
+
+        return familiaExiste && vendedorExiste;
+      });
+
+      const campo = document.getElementById('acertoCampoSelect')?.value || 'todos';
+      const query = (document.getElementById('acertoSearchInput')?.value || '').toLowerCase().trim();
+
+      const filtradas = transacoes.filter(t => {
+        if (!query) return true;
+
+        const mapa = {
+          id: (t.id || '').toLowerCase(),
+          data: (t.data || '').toLowerCase(),
+          vendedor: (t.vendedor || '').toLowerCase(),
+          familia: (t.familia || '').toLowerCase(),
+          produtos: (t.produtos || '').toLowerCase(),
+          total: `${t.total.toFixed(2).replace('.', ',')} ${t.total.toFixed(2)}`,
+          fam50: `${t.fam50.toFixed(2).replace('.', ',')} ${t.fam50.toFixed(2)}`,
+          egor50: `${t.egor50.toFixed(2).replace('.', ',')} ${t.egor50.toFixed(2)}`
+        };
+
+        if (campo !== 'todos' && mapa[campo]) {
+          return mapa[campo].includes(query);
+        }
+        return Object.values(mapa).some(val => val.includes(query));
+      });
+
+      const txBody = document.getElementById('transacoesTableBody');
+      if (!txBody) return;
+      txBody.innerHTML = '';
+
+      if (filtradas.length === 0) {
+        txBody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 2.5rem;">${query ? 'Nenhuma transação encontrada.' : 'Sem transações registadas.'}</td></tr>`;
+        return;
+      }
+
+      filtradas.forEach(t => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="color: var(--text-sub);">${t.id}</td>
+          <td>${t.data}</td>
+          <td><strong>${t.vendedor}</strong></td>
+          <td>${t.familia}</td>
+          <td style="font-style: italic; color: var(--text-muted);">${t.produtos}</td>
+          <td><strong>${t.total.toFixed(2).replace('.', ',')} €</strong></td>
+          <td style="color: var(--green-accent); font-weight: 700;">${t.fam50.toFixed(2).replace('.', ',')} €</td>
+          <td style="color: var(--blue-accent); font-weight: 700;">${t.egor50.toFixed(2).replace('.', ',')} €</td>
+        `;
+        txBody.appendChild(tr);
+      });
+    }
+
+    /* RENDERIZAÇÃO DA TABELA DE GESTORES */
+    function renderGestores() {
+      const gestoresBody = document.getElementById('gestoresTableBody');
+      if (!gestoresBody) return;
+
+      let gestores = [];
+      try {
+        gestores = JSON.parse(localStorage.getItem('egor_gestores') || '[]');
+      } catch (err) {
+        gestores = [];
+      }
+
+      gestoresBody.innerHTML = '';
+
+      // Gestor Mestre Padrão (Protegido contra eliminação)
+      const trMaster = document.createElement('tr');
+      trMaster.innerHTML = `
+        <td style="color: #38bdf8; font-weight: 700;">gestao@egor.pt</td>
+        <td>Sistema Base</td>
+        <td><span class="pill-status pill-ativo" style="background: rgba(56, 189, 248, 0.15); color: #38bdf8;">ADMINISTRADOR MESTRE</span></td>
+        <td><span style="font-size: 0.8rem; color: #64748b; font-style: italic;">Conta Mestre</span></td>
+      `;
+      gestoresBody.appendChild(trMaster);
+
+      // Gestores Adicionados
+      gestores.forEach(g => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td style="font-weight: 700; color: #fff;">${g.email}</td>
+          <td>${g.criadoEm || 'N/A'}</td>
+          <td><span class="pill-status pill-ativo">GESTOR INSTITUCIONAL</span></td>
+          <td>
+            <button onclick="handleEliminarGestor('${g.email}')" class="btn-sm btn-sm-red">Eliminar</button>
+          </td>
+        `;
+        gestoresBody.appendChild(tr);
+      });
+    }
+
+    /* ELIMINA GESTOR E BLOQUEIA FUTUROS LOGINS */
+    function handleEliminarGestor(email) {
+      if (confirm(`Tem a certeza de que deseja eliminar o acesso do gestor ${email}? A conta deixará de conseguir fazer login.`)) {
+        let gestores = [];
+        try {
+          gestores = JSON.parse(localStorage.getItem('egor_gestores') || '[]');
+        } catch (err) { 
+          gestores = []; 
+        }
+
+        // Remove a conta correspondente
+        gestores = gestores.filter(g => g.email.toLowerCase() !== email.toLowerCase());
+        localStorage.setItem('egor_gestores', JSON.stringify(gestores));
+
+        if (typeof db !== 'undefined' && db.addLog) {
+          db.addLog(`Gestor Eliminado — Acesso de ${email} revogado permanentemente`, 'red');
+        }
+
+        renderGestores();
+        alert(`O gestor ${email} foi eliminado com sucesso e já não poderá aceder ao portal.`);
+      }
+    }
+
+    function renderUI() {
+      const familias = db.getFamilias();
+      const vendedores = db.getVendedores();
+      renderTabelaAcerto();
+      renderGestores();
+
+      const transacoes = db.getTransacoes().filter(t => {
+        if (!t) return false;
+
+        const familiaExiste = familias.some(f => {
+          const fId = (f.id || '').trim().toLowerCase();
+          const fNome = (f.nome || '').trim().toLowerCase();
+          const tFam = (t.familia || '').trim().toLowerCase();
+          const tFamId = (t.familiaId || '').trim().toLowerCase();
+          return (fId && (tFam.includes(fId) || tFamId === fId)) || (fNome && tFam.includes(fNome));
+        });
+
+        const vendedorExiste = vendedores.some(v => {
+          const vId = (v.id || '').trim().toLowerCase();
+          const vBanca = (v.banca || '').trim().toLowerCase();
+          const vResp = (v.resp || '').trim().toLowerCase();
+          const tVend = (t.vendedor || '').trim().toLowerCase();
+          const tVendId = (t.vendedorId || '').trim().toLowerCase();
+          return (vId && (tVend.includes(vId) || tVendId === vId)) ||
+                 (vBanca && (tVend.includes(vBanca) || vBanca.includes(tVend))) ||
+                 (vResp && tVend.includes(vResp));
+        });
+
+        return familiaExiste && vendedorExiste;
+      });
+
+      const totalCarregado = familias.reduce((sum, f) => sum + (f.saldo || 0), 0);
+      const egorShare = transacoes.reduce((sum, t) => sum + (t.egor50 || 0), 0);
+      const vendAtivosCount = vendedores.filter(v => v.ativo).length;
+
+      document.getElementById('cardTotalLoaded').textContent = totalCarregado.toFixed(2).replace('.', ',') + ' €';
+      document.getElementById('cardEgorShare').textContent = egorShare.toFixed(2).replace('.', ',') + ' €';
+      document.getElementById('cardTotalTx').textContent = transacoes.length;
+      document.getElementById('cardVendAtivos').textContent = vendAtivosCount;
+
+      const famBody = document.getElementById('familiasTableBody');
+      famBody.innerHTML = '';
+
+      if (familias.length === 0) {
+        famBody.innerHTML = `<tr><td colspan="11" style="text-align: center; color: var(--text-muted); padding: 2rem;">Nenhuma família registada.</td></tr>`;
+      } else {
+        familias.forEach(f => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="color: var(--blue-accent); font-weight: 700;">${f.id}</td>
+            <td><strong>${f.nome}</strong></td>
+            <td>${f.nif}</td>
+            <td>${f.tel}</td>
+            <td style="letter-spacing: 0.15em; font-weight: 800; color: #10b981;">${f.pin || f.senha || '1234'}</td>
+            <td><strong>${f.quota.toFixed(2)} €</strong></td>
+            <td style="font-weight: 800; color: #fff;">${f.saldo.toFixed(2).replace('.', ',')} €</td>
+            <td><span class="pill-status ${f.ativo ? 'pill-ativo' : 'pill-inativo'}">${f.ativo ? 'ATIVO' : 'INATIVO'}</span></td>
+            <td>
+              <button onclick="handleToggleFamilia('${f.id}')" class="btn-sm btn-sm-gray">${f.ativo ? 'Desativar' : 'Ativar'}</button>
+            </td>
+            <td>
+              <div style="display: flex; gap: 0.35rem;">
+                <button onclick="handleAddSaldo('${f.id}')" class="btn-sm btn-sm-blue" title="Adicionar Saldo">+€</button>
+                <button onclick="handleRemoverSaldo('${f.id}')" class="btn-sm btn-sm-gray" style="color: #f43f5e;" title="Remover Saldo">-€</button>
+              </div>
+            </td>
+            <td>
+              <button onclick="handleEliminarFamilia('${f.id}')" class="btn-sm btn-sm-red">Eliminar</button>
+            </td>
+          `;
+          famBody.appendChild(tr);
+        });
+      }
+
+      const vendBody = document.getElementById('vendedoresTableBody');
+      vendBody.innerHTML = '';
+
+      if (vendedores.length === 0) {
+        vendBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2.5rem;">Nenhum vendedor registado. Clique em "Registar Vendedor".</td></tr>`;
+      } else {
+        vendedores.forEach(v => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `
+            <td style="color: var(--green-accent); font-weight: 700;">${v.id}</td>
+            <td><strong>${v.banca}</strong></td>
+            <td>${v.resp}</td>
+            <td style="letter-spacing: 0.1em;">${v.pin}</td>
+            <td><span class="pill-status ${v.ativo ? 'pill-ativo' : 'pill-suspenso'}">${v.ativo ? 'ATIVO' : 'SUSPENSO'}</span></td>
+            <td><button onclick="handleToggleVendedor('${v.id}')" class="btn-sm btn-sm-gray">${v.ativo ? 'Suspender' : 'Ativar'}</button></td>
+            <td><button onclick="handleEliminarVendedor('${v.id}')" class="btn-sm btn-sm-red">Eliminar</button></td>
+          `;
+          vendBody.appendChild(tr);
+        });
+      }
+
+      renderLogs();
+    }
+
+    function renderLogs() {
+      const logs = db.getLogs();
+      const logsContainer = document.getElementById('logsList');
+      const query = (document.getElementById('logsSearchInput').value || '').toLowerCase().trim();
+
+      let filtered = logs.filter(l => l.texto.toLowerCase().includes(query) || (l.hora && l.hora.toLowerCase().includes(query)));
+      let displayLogs = showingAllLogs ? filtered : filtered.slice(0, 8);
+
+      logsContainer.innerHTML = '';
+
+      if (displayLogs.length === 0) {
+        logsContainer.innerHTML = `<div style="color: var(--text-muted); font-size: 0.875rem; padding: 1rem 0;">${query ? 'Nenhum registo encontrado para a pesquisa efetuada.' : 'Nenhum registo de auditoria.'}</div>`;
+        return;
+      }
+
+      displayLogs.forEach(l => {
+        const colorClass = l.tipo === 'green' ? '#10b981' : l.tipo === 'red' ? '#f43f5e' : '#38bdf8';
+        const item = document.createElement('div');
+        item.className = 'log-item';
+        item.innerHTML = `
+          <div><strong style="color: ${colorClass};">${l.texto.split('—')[0]}</strong> — ${l.texto.split('—')[1] || ''}</div>
+          <span style="color: #64748b; font-size: 0.75rem;">${l.hora || ''}</span>
+        `;
+        logsContainer.appendChild(item);
+      });
+    }
+
+    function toggleExpandLogs() {
+      showingAllLogs = !showingAllLogs;
+      const btn = document.getElementById('btnToggleLogs');
+      const list = document.getElementById('logsList');
+
+      if (showingAllLogs) {
+        btn.textContent = "Mostrar 8 Recentes";
+        list.classList.add('expanded');
+      } else {
+        btn.textContent = "Ver Todas";
+        list.classList.remove('expanded');
+      }
+
+      renderLogs();
+    }
+
+    /* LÓGICA DE CRIAR E AUTENTICAR GESTORES */
+    function openModalNovoGestor() {
+      document.getElementById('modalNovoGestor').style.display = 'flex';
+    }
+
+    function closeModalNovoGestor() {
+      document.getElementById('modalNovoGestor').style.display = 'none';
+      document.getElementById('formNovoGestor').reset();
+    }
+
+    function guardarNovoGestor(e) {
+      e.preventDefault();
+      const masterEmail = document.getElementById('masterEmail').value.trim();
+      const masterPass = document.getElementById('masterPass').value.trim();
+      const novoEmail = document.getElementById('novoGestorEmail').value.trim();
+      const novaPass = document.getElementById('novoGestorPass').value.trim();
+
+      if (masterEmail !== 'gestao@egor.pt' || masterPass !== '8pontos') {
+        alert('Autorização recusada: Apenas o e-mail e a palavra-passe do administrador tem autorização para criar novos gestores.');
+        return;
+      }
+
+      let gestores = [];
+      try {
+        gestores = JSON.parse(localStorage.getItem('egor_gestores') || '[]');
+      } catch (err) {
+        gestores = [];
+      }
+
+      if (gestores.some(g => g.email.toLowerCase() === novoEmail.toLowerCase()) || novoEmail.toLowerCase() === 'gestao@egor.pt') {
+        alert('Este e-mail de gestor já se encontra registado.');
+        return;
+      }
+
+      gestores.push({
+        email: novoEmail,
+        pass: novaPass,
+        criadoEm: new Date().toLocaleString('pt-PT')
+      });
+
+      localStorage.setItem('egor_gestores', JSON.stringify(gestores));
+
+      if (typeof db !== 'undefined' && db.addLog) {
+        db.addLog(`Novo Gestor Registado — ${novoEmail}`, 'green');
+      }
+
+      alert('Novo gestor registado e guardado com sucesso!');
+      closeModalNovoGestor();
+      renderGestores();
+    }
+
+    /* VALIDAÇÃO DE LOGIN: SE O GESTOR FOI ELIMINADO, NÃO PASSA */
+    function goToStep2(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass = document.getElementById('loginPass').value.trim();
+
+      let gestores = [];
+      try {
+        gestores = JSON.parse(localStorage.getItem('egor_gestores') || '[]');
+      } catch (err) {
+        gestores = [];
+      }
+
+      const isMaster = (email === 'gestao@egor.pt' && pass === '8pontos');
+      const isGestorValido = gestores.some(g => g.email === email && g.pass === pass);
+
+      if (!isMaster && !isGestorValido) {
+        alert('E-mail ou palavra-passe incorretos.');
+        return;
+      }
+
+      emailGestorAtual = email;
+
+      codigo2FAGerado = "";
+      for (let i = 0; i < 6; i++) {
+        codigo2FAGerado += Math.floor(Math.random() * 10);
+      }
+
+      alert("Código 2FA temporário: " + codigo2FAGerado);
+
+      const emailDisplay = document.getElementById('email2FADisplay');
+      if (emailDisplay) emailDisplay.textContent = `para ${emailGestorAtual}`;
+
+      const input2FA = document.getElementById('input2FA');
+      if (input2FA) input2FA.value = '';
+
+      document.getElementById('step1_login').style.display = 'none';
+      document.getElementById('step2_2fa').style.display = 'flex';
+    }
+
+    function cancel2FA() {
+      codigo2FAGerado = "";
+      document.getElementById('step2_2fa').style.display = 'none';
+      document.getElementById('step1_login').style.display = 'flex';
+    }
+
+    function goToStep3(e) {
+      e.preventDefault();
+      const codigoIntroduzido = document.getElementById('input2FA').value.trim();
+
+      if (codigoIntroduzido !== codigo2FAGerado) {
+        alert("❌ Código incorreto! O acesso foi negado.");
+        return;
+      }
+
+      codigo2FAGerado = "";
+      document.getElementById('step2_2fa').style.display = 'none';
+      document.getElementById('step3_dashboard').style.display = 'block';
+      document.getElementById('topUserBadge').style.display = 'flex';
+      renderUI();
+    }
+
+    function logout() {
+      document.getElementById('step3_dashboard').style.display = 'none';
+      document.getElementById('topUserBadge').style.display = 'none';
+      document.getElementById('step1_login').style.display = 'flex';
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+
+      if (tabName === 'indicadores') { document.getElementById('tabContentIndicadores').classList.add('active'); document.getElementById('btnTabIndicadores').classList.add('active'); }
+      else if (tabName === 'familias') { document.getElementById('tabContentFamilias').classList.add('active'); document.getElementById('btnTabFamilias').classList.add('active'); }
+      else if (tabName === 'vendedores') { document.getElementById('tabContentVendedores').classList.add('active'); document.getElementById('btnTabVendedores').classList.add('active'); }
+      else if (tabName === 'acerto') { document.getElementById('tabContentAcerto').classList.add('active'); document.getElementById('btnTabAcerto').classList.add('active'); }
+      else if (tabName === 'gestores') { document.getElementById('tabContentGestores').classList.add('active'); document.getElementById('btnTabGestores').classList.add('active'); }
+    }
+
+    function handleToggleFamilia(id) { db.toggleEstadoFamilia(id); renderUI(); }
+    function handleToggleVendedor(id) { db.toggleEstadoVendedor(id); renderUI(); }
+
+    function handleAddSaldo(id) {
+      const valorStr = prompt("Indique a quantia em Euros (€) a adicionar ao saldo:");
+      const valor = parseFloat(valorStr);
+      if (!isNaN(valor) && valor > 0) {
+        db.adicionarSaldoFamilia(id, valor);
+        renderUI();
+      }
+    }
+
+    function handleRemoverSaldo(id) {
+      const valorStr = prompt("Indique a quantia em Euros (€) a deduzir/remover do saldo:");
+      const valor = parseFloat(valorStr);
+      if (!isNaN(valor) && valor > 0) {
+        db.removerSaldoFamilia(id, valor);
+        renderUI();
+      }
+    }
+
+    function handleEliminarFamilia(id) {
+      if (confirm(`Tem a certeza de que deseja apagar permanentemente a família ${id}?`)) {
+        db.deleteFamilia(id);
+        renderUI();
+      }
+    }
+
+    function handleEliminarVendedor(id) {
+      if (confirm(`Tem a certeza de que deseja apagar permanentemente o vendedor ${id}?`)) {
+        db.deleteVendedor(id);
+        renderUI();
+      }
+    }
+
+    function handleCarregarSaldos() {
+      const adicionado = db.carregarSaldosGlobais();
+      renderUI();
+      alert(`Carregamento Global efetuado! Adicionados +${adicionado.toFixed(2)}€ a famílias ativas.`);
+    }
+
+    function openModalFamilia() { document.getElementById('modalFamilia').style.display = 'flex'; }
+    function closeModalFamilia() { document.getElementById('modalFamilia').style.display = 'none'; }
+    function openModalVendedor() { document.getElementById('modalVendedor').style.display = 'flex'; }
+    function closeModalVendedor() { document.getElementById('modalVendedor').style.display = 'none'; }
+
+    function guardarFamilia(e) {
+      e.preventDefault();
+      const nome = document.getElementById('famNome').value.trim();
+      const nif = document.getElementById('famNif').value.trim();
+      const tel = document.getElementById('famTel').value.trim();
+      const quota = parseFloat(document.getElementById('famQuota').value) || 40;
+      const pinElem = document.getElementById('famPin');
+      const senha = pinElem ? pinElem.value.trim() : '1234';
+      const count = db.getFamilias().length + 1001;
+
+      db.addFamilia({
+        id: 'BFP-' + count,
+        nome, nif, tel, quota, senha, pin: senha,
+        saldo: quota,
+        ativo: true
+      });
+
+      closeModalFamilia();
+      document.getElementById('formFamilia').reset();
+      renderUI();
+    }
+
+    function guardarVendedor(e) {
+      e.preventDefault();
+      const banca = document.getElementById('vendBanca').value.trim();
+      const resp = document.getElementById('vendResp').value.trim();
+      const pinElem = document.getElementById('vendPin');
+      const pin = pinElem ? pinElem.value.trim() : '1234';
+      const count = db.getVendedores().length + 1;
+
+      db.addVendedor({
+        id: 'VEND-0' + count,
+        banca, 
+        resp, 
+        pin,
+        ativo: true
+      });
+
+      closeModalVendedor();
+      document.getElementById('formVendedor').reset();
+      renderUI();
+    }
+
+    function exportarCSV() {
+      const familias = db.getFamilias();
+      const vendedores = db.getVendedores();
+      const transacoes = db.getTransacoes().filter(t => {
+        if (!t) return false;
+        const familiaExiste = familias.some(f => {
+          const fId = (f.id || '').trim().toLowerCase();
+          const fNome = (f.nome || '').trim().toLowerCase();
+          const tFam = (t.familia || '').trim().toLowerCase();
+          const tFamId = (t.familiaId || '').trim().toLowerCase();
+          return (fId && (tFam.includes(fId) || tFamId === fId)) || (fNome && tFam.includes(fNome));
+        });
+        const vendedorExiste = vendedores.some(v => {
+          const vId = (v.id || '').trim().toLowerCase();
+          const vBanca = (v.banca || '').trim().toLowerCase();
+          const vResp = (v.resp || '').trim().toLowerCase();
+          const tVend = (t.vendedor || '').trim().toLowerCase();
+          const tVendId = (t.vendedorId || '').trim().toLowerCase();
+          return (vId && (tVend.includes(vId) || tVendId === vId)) || (vBanca && (tVend.includes(vBanca) || vBanca.includes(tVend))) || (vResp && tVend.includes(vResp));
+        });
+        return familiaExiste && vendedorExiste;
+      });
+
+      if (transacoes.length === 0) {
+        alert('Não existem transações para exportar.');
+        return;
+      }
+      let csvData = "ID_Transacao,Data,Vendedor,Familia,Produtos,Total,Familia_50,Fundacao_50\n";
+      transacoes.forEach(t => {
+        csvData += `${t.id},"${t.data}","${t.vendedor}","${t.familia}","${t.produtos}",${t.total.toFixed(2)},${t.fam50.toFixed(2)},${t.egor50.toFixed(2)}\n`;
+      });
+
+      const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', 'relatorio_acerto_egor.csv');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+	
+	function abrirPainelRelatorioEmpresa() {
+  const select = document.getElementById('selectVendedorRelatorio');
+  if (!select) return;
+
+  // 1. Vai buscar os comerciantes ativos do db.js
+  const vendedores = typeof db !== 'undefined' ? db.getVendedores() : [];
+
+  // 2. Preenche com a opção global e opções individuais
+  select.innerHTML = `
+    <option value="TODOS"> Todas as Frutarias (Sub-relatórios Divididos)</option>
+    <optgroup label="Comerciantes Individuais">
+  `;
+
+  if (vendedores.length === 0) {
+    select.innerHTML += '<option value="">Nenhum vendedor registado</option>';
+  } else {
+    vendedores.forEach(v => {
+      const option = document.createElement('option');
+      option.value = v.id || v.banca;
+      option.textContent = ` ${v.banca} ${v.resp ? '— (' + v.resp + ')' : ''}`;
+      select.appendChild(option);
+    });
+  }
+
+  select.innerHTML += '</optgroup>';
+
+  // 3. Exibe o modal
+  const modal = document.getElementById('modalSelecaoVendedor');
+  if (modal) modal.style.display = 'flex';
+}
+
+// Alias de suporte caso o botão chame openModalSelecaoVendedor
+function openModalSelecaoVendedor() {
+  abrirPainelRelatorioEmpresa();
+}
+
+function fecharModalSelecaoVendedor() {
+  const modal = document.getElementById('modalSelecaoVendedor');
+  if (modal) modal.style.display = 'none';
+}
+
+function fecharPainelRelatorioEmpresa() {
+  fecharModalSelecaoVendedor();
+}
+
+// Submissão: Abre relatorio.html num novo separador passando o id do vendedor
+function executarRelatorioVendedor(event) {
+  event.preventDefault();
+
+  const select = document.getElementById('selectVendedorRelatorio');
+  const vendedorId = select ? select.value : 'TODOS';
+
+  if (!vendedorId) {
+    alert('Por favor, selecione uma opção.');
+    return;
+  }
+
+  fecharModalSelecaoVendedor();
+
+  // Abre relatorio.html num novo separador com o parâmetro na URL
+  window.open(`relatorio.html?vendedorId=${encodeURIComponent(vendedorId)}`, '_blank');
+}
+
+  </script>
+</body>
+</html>

@@ -2,105 +2,10 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plataforma Best Food Portugal — Seleção de Perfil</title>
-  <link rel="stylesheet" href="css/styles.css">
-  
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#060913">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Best Food Portugal">
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
-
-  <!-- REGISTO DO SERVICE WORKER DA PWA -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then(reg => console.log('PWA Service Worker Ativo no escopo:', reg.scope))
-          .catch(err => console.error('Erro ao registar Service Worker PWA:', err));
-      });
-    }
-  </script>
+  <meta http-equiv="refresh" content="0; url=./menu.html">
+  <script>window.location.href = "./menu.html";</script>
+  <title>Best Food Portugal</title>
 </head>
 <body>
-
-  <header class="header">
-    <div class="brand">
-      <div class="brand-icon">
-        <svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 8C15 8 13.5 9.5 13.5 11.5C13.5 13.5 15 15 17 15C19 15 20.5 13.5 20.5 11.5C20.5 9.5 19 8 17 8ZM7 8C5 8 3.5 9.5 3.5 11.5C3.5 13.5 5 15 7 15C9 15 10.5 13.5 10.5 11.5C10.5 9.5 9 8 7 8ZM12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM12 20C7.59 20 4 16.41 4 12C4 7.59 7.59 4 12 4C16.41 4 20 7.59 20 12C20 16.41 16.41 20 12 20Z"/></svg>
-      </div>
-      <div>
-        <div class="brand-title">
-          Best Food Portugal
-          <span class="brand-pill">Piloto Freguesia</span>
-        </div>
-        <div class="brand-sub">Algoritmo Soluções Informáticas × Fundação EGOR</div>
-      </div>
-    </div>
-  </header>
-
-  <main class="container">
-    <div class="badge-portal">
-      <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
-      Programa de Apoio Alimentar em Fruta & Hortícolas Frescos
-    </div>
-
-    <h1 class="main-heading">Selecione o Perfil de Autenticação</h1>
-    <p class="sub-heading">
-      Plataforma de gestão financeira e logística de produtos frescos com comparticipação direta de 50% pela Fundação EGOR.
-    </p>
-
-    <div class="portal-grid">
-      
-      <a href="backoffice.html" class="portal-card blue">
-        <div class="card-top">
-          <div class="icon-box-portal">
-            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-          </div>
-          <span class="badge-tag">Gestão Institucional</span>
-        </div>
-        <div>
-          <h2 class="portal-card-title">Backoffice Fundação EGOR</h2>
-          <p class="portal-card-desc">
-            Painel de gestão operacional, verificação 2FA, atribuição de saldos globais e relatórios de acerto 50/50.
-          </p>
-        </div>
-        <div class="portal-card-footer">
-          Aceder ao Backoffice <span>→</span>
-        </div>
-      </a>
-
-      <a href="familia.html" class="portal-card purple">
-        <div class="card-top">
-          <div class="icon-box-portal">
-            <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8h16v10zm-12-3h8v2H8z"/></svg>
-          </div>
-          <span class="badge-tag">Área Beneficiário</span>
-        </div>
-        <div>
-          <h2 class="portal-card-title">Cartão Família Beneficiária</h2>
-          <p class="portal-card-desc">
-            Consulta de saldo comparticipado disponível, QR Code para validação na banca e histórico de compras.
-          </p>
-        </div>
-        <div class="portal-card-footer">
-          Aceder ao Cartão Digital <span>→</span>
-        </div>
-      </a>
-	  
-	<div style="grid-column: 1 / -1; width: 100%; display: flex; justify-content: center; margin-top: 1rem;">
-  <a href="vendedor.html" style="display: inline-flex; align-items: center; justify-content: center; gap: 0.65rem; padding: 0.75rem 2rem; background-color: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 50px; color: #10b981; font-weight: 700; font-size: 0.95rem; text-decoration: none; transition: all 0.2s ease;" onmouseover="this.style.backgroundColor='rgba(16, 185, 129, 0.2)'; this.style.borderColor='#10b981';" onmouseout="this.style.backgroundColor='rgba(16, 185, 129, 0.1)'; this.style.borderColor='rgba(16, 185, 129, 0.4)';">
-    <svg style="width: 1.25rem; height: 1.25rem; fill: currentColor; flex-shrink: 0;" viewBox="0 0 24 24">
-      <path d="M20 4H4c-1.11 0-1.99.89-1.99 2L2 18c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V6c0-1.11-.89-2-2-2zm0 14H4V8h16v10zm-12-3h8v2H8z"/>
-    </svg>
-    <span>Aceder à Aplicação do Vendedor (PWA)</span>
-  </a>
-</div>
-
-    </div>
-  </main>
-
 </body>
 </html>
